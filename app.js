@@ -20,7 +20,7 @@ function tensor(meta, buffer, name){
 
 async function loadModel(){
   try{
-    modelPill.innerHTML='<i></i>Memuat CNN…';
+    modelPill.innerHTML='<i></i><span>Memuat AI…</span>';
     const [metaRes, binRes] = await Promise.all([fetch('./model.json'), fetch('./model.bin')]);
     if(!metaRes.ok || !binRes.ok) throw new Error('File model tidak dapat dimuat.');
     const meta=await metaRes.json();
@@ -28,11 +28,11 @@ async function loadModel(){
     const T={};
     Object.keys(meta.tensors).forEach(name=>T[name]=tensor(meta,buffer,name));
     MODEL={meta,T}; modelReady=true;
-    modelPill.className='model-pill active'; modelPill.innerHTML='<i></i>CNN aktif · browser';
+    modelPill.className='model-pill active'; modelPill.innerHTML='<i></i><span>AI aktif · browser</span>';
     analyzeBtn.disabled=!selectedFile;
   }catch(err){
     console.error(err); modelReady=false;
-    modelPill.className='model-pill inactive'; modelPill.innerHTML='<i></i>Model gagal dimuat';
+    modelPill.className='model-pill inactive'; modelPill.innerHTML='<i></i><span>AI tidak aktif</span>';
   }
 }
 loadModel();
@@ -198,6 +198,9 @@ function render(data){
 const views = [...document.querySelectorAll('.app-view')];
 function showView(name){
   views.forEach(v=>v.classList.toggle('active', v.id===`view-${name}`));
+  document.querySelectorAll('.desktop-nav [data-view], .mobile-bottom-nav [data-view]').forEach(btn=>{
+    btn.classList.toggle('is-active', btn.dataset.view===name || (name==='booking' && btn.dataset.view==='specialists'));
+  });
   window.scrollTo({top:0,behavior:'smooth'});
   if(name==='history') renderHistory();
   if(name==='appointments') renderAppointments();
