@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="RETINA-AI — platform skrining retinoblastoma dan rujukan dokter mata.">
+  <title>RETINA-AI — Skrining Retinoblastoma</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <header class="nav">
+    <button class="brand nav-home" type="button" data-view="home" aria-label="Beranda"><span class="brand-icon">R</span><span>RETINA-<b>AI</b></span></button>
+    <nav>
+      <button type="button" data-view="home">Beranda</button>
+      <button type="button" data-view="screening">Deteksi</button>
+      <button type="button" data-view="specialists">Cari Spesialis</button>
+      <button type="button" data-view="history">Riwayat</button>
+    </nav>
+    <span id="modelPill" class="model-pill inactive"><i></i>Memuat CNN…</span>
+  </header>
+
+  <main>
+    <section class="app-view active" id="view-home">
+      <div class="dashboard-shell">
+        <section class="welcome-card">
+          <div><span>Selamat datang di</span><h1>RETINA-AI</h1><p>Platform edukasi dan skrining awal untuk membantu mengenali tanda yang perlu dievaluasi terkait retinoblastoma.</p></div>
+        </section>
+
+        <div class="section-title"><span>Fitur utama</span><h2>Semua kebutuhan dalam satu tempat</h2></div>
+        <div class="feature-grid">
+          <button class="feature-card" type="button" data-view="screening"><span class="feature-icon">◎</span><b>Deteksi Retinoblastoma</b><small>Unggah citra mata untuk analisis AI</small></button>
+          <button class="feature-card" type="button" data-view="specialists"><span class="feature-icon mint">⌕</span><b>Cari Spesialis</b><small>Temukan dokter mata / onkologi mata</small></button>
+          <button class="feature-card" type="button" data-view="history"><span class="feature-icon peach">▤</span><b>Riwayat</b><small>Simpan hasil skrining di perangkat ini</small></button>
+          <button class="feature-card" type="button" data-view="appointments"><span class="feature-icon green">▣</span><b>Jadwal</b><small>Lihat janji konsultasi yang dibuat</small></button>
+        </div>
+
+        <div class="section-title article-heading"><span>Edukasi kesehatan</span><h2>Kenali retinoblastoma lebih awal</h2></div>
+        <div class="article-grid">
+          <article class="article-card"><div class="article-art">◉</div><div><b>Leukokoria: refleks putih pada pupil</b><p>Salah satu tanda yang perlu diperiksakan, terutama bila tampak berulang pada foto dengan flash.</p></div></article>
+          <article class="article-card"><div class="article-art">↔</div><div><b>Strabismus dan perubahan arah pandang</b><p>Mata yang tampak tidak sejajar dapat memiliki banyak penyebab dan perlu evaluasi profesional.</p></div></article>
+          <article class="article-card"><div class="article-art">♡</div><div><b>Kapan harus mencari pertolongan?</b><p>Bila ada leukokoria, perubahan penglihatan, nyeri, kemerahan menetap, atau kekhawatiran pada mata anak, periksakan langsung.</p></div></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="app-view" id="view-screening">
+      <div class="page-shell">
+        <button class="back-btn" type="button" data-view="home">‹ Beranda</button>
+        <div class="page-head"><span>AI SCREENING</span><h2>Deteksi Retinoblastoma</h2><p>Unggah citra mata. Analisis berjalan lokal di browser sehingga gambar tidak dikirim ke server.</p></div>
+        <div class="screen-grid">
+          <div class="upload-card">
+            <label class="dropzone" id="dropzone" for="fileInput">
+              <input id="fileInput" type="file" accept="image/jpeg,image/png,image/webp" hidden>
+              <div id="emptyState" class="empty-state"><div class="upload-mark">↥</div><h3>Pilih citra mata</h3><p>Tarik gambar ke sini atau klik untuk memilih file.</p><small>JPG, PNG, WEBP · maks. 10 MB</small></div>
+              <img id="preview" alt="Pratinjau citra mata" hidden>
+            </label>
+            <div class="file-meta" id="fileMeta">Belum ada file dipilih.</div>
+            <div class="actions"><button id="resetBtn" class="btn secondary" type="button">Reset</button><button id="analyzeBtn" class="btn primary" type="button" disabled>Analisis dengan CNN</button></div>
+          </div>
+
+          <div class="result-card">
+            <div id="placeholder" class="placeholder"><div class="pulse-dot"></div><h3>Hasil akan tampil di sini</h3><p>Unggah citra mata lalu jalankan analisis AI.</p></div>
+            <div id="loading" class="loading" hidden><div class="loader-ring"></div><h3>Model sedang membaca citra</h3><p id="loadingText">Memvalidasi file…</p></div>
+            <div id="result" hidden>
+              <div class="result-top"><div><span id="stateBadge" class="badge">—</span><h3 id="resultTitle">—</h3><p id="summary"></p></div><div class="top-score"><span>Skor tertinggi</span><strong id="topProbability">—</strong><small id="topLabel">—</small></div></div>
+              <div id="qualityWarnings"></div>
+              <div class="detected-wrap"><h4>Label yang melewati threshold</h4><div id="detectedList" class="detected-list"></div></div>
+              <div class="prob-wrap"><div class="prob-head"><h4>Skor seluruh label</h4><span>threshold berbeda per kelas</span></div><div id="probabilities" class="probabilities"></div></div>
+              <div class="disclaimer">Prototype penelitian/edukasi. Hasil skrining bukan pengganti pemeriksaan dan diagnosis oleh dokter.</div>
+              <button class="btn primary result-referral" type="button" data-view="specialists">Cari dokter untuk evaluasi</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="app-view" id="view-specialists">
+      <div class="page-shell narrow">
+        <button class="back-btn" type="button" data-view="home">‹ Beranda</button>
+        <div class="page-head compact"><span>RUJUKAN</span><h2>Cari Spesialis Mata</h2><p>Daftar di bawah adalah data demo untuk prototipe UI, bukan direktori dokter nyata.</p></div>
+        <div class="search-box"><span>⌕</span><input id="doctorSearch" type="search" placeholder="Cari nama atau spesialisasi..."><span>≡</span></div>
+        <div class="chips"><button class="chip active" data-filter="all">Semua</button><button class="chip" data-filter="onkologi">Onkologi mata</button><button class="chip" data-filter="pediatrik">Pediatrik</button></div>
+        <div id="doctorList" class="doctor-list"></div>
+      </div>
+    </section>
+
+    <section class="app-view" id="view-booking">
+      <div class="page-shell narrow">
+        <button class="back-btn" type="button" data-view="specialists">‹ Cari Spesialis</button>
+        <div class="page-head compact"><span>JANJI TEMU</span><h2>Buat Janji Temu</h2></div>
+        <div id="selectedDoctor" class="selected-doctor"></div>
+        <div class="booking-card">
+          <h3>Pilih tanggal</h3>
+          <div class="date-grid" id="dateGrid"></div>
+          <h3>Pilih jam</h3>
+          <div class="time-grid" id="timeGrid"></div>
+          <button id="confirmAppointment" class="btn primary full" type="button" disabled>Konfirmasi janji temu</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="app-view" id="view-history">
+      <div class="page-shell narrow">
+        <button class="back-btn" type="button" data-view="home">‹ Beranda</button>
+        <div class="page-head compact"><span>DATA LOKAL</span><h2>Riwayat Screening</h2><p>Riwayat disimpan hanya di browser perangkat ini.</p></div>
+        <div id="historyList" class="history-list"></div>
+      </div>
+    </section>
+
+    <section class="app-view" id="view-appointments">
+      <div class="page-shell narrow">
+        <button class="back-btn" type="button" data-view="home">‹ Beranda</button>
+        <div class="page-head compact"><span>JADWAL</span><h2>Janji Temu Saya</h2></div>
+        <div id="appointmentList" class="history-list"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer><span>RETINA-AI · 2026</span><span>Educational / research prototype</span></footer>
+  <script src="./app.js"></script>
+</body>
+</html>
